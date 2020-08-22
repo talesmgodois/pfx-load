@@ -1,1 +1,6 @@
 dist
+node_modules
+test/certificates
+test/*.js
+test/index.ts
+src/*.js
