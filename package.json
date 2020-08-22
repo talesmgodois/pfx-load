@@ -14,7 +14,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "pfx"
+    "pfx",
+    "certificates",
+    "certificate",
+    "node-forge",
+    "tls",
+    "getjus",
+    "startup-share"
   ],
   "author": "",
   "license": "MIT",
