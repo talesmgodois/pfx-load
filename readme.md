@@ -38,4 +38,4 @@ PfxOptions {
 
 `````
 
-I hope you can make a good use of this library. If you'd like to add or complain about something, please create an Issue in our github. Or enter in our discord community:
+I hope you can make a good use of this library. If you'd like to add or complain about something, please create an Issue in our github. Or enter in our [community](https://bit.ly/2Em3IlR)
