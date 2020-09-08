@@ -55,7 +55,7 @@ const pfxLoad = (certPath: string, passphrase: string, _options: PfxOptions = DE
     error = e;
   }
 
-  const willWork = !isPfxOutdated && !isPasswordOrPfxInvalid
+  const willWork = (!isPfxOutdated && !isPasswordOrPfxInvalid && !error);
   const _validCerts = showCerts ? { validCerts } : {};
   const _error = showError ? { error } : {}
   return {
