@@ -3,7 +3,9 @@ import { PfxLoad, PfxOptions } from './types'
 import * as nodeForge from 'node-forge';
 
 import * as fs from 'fs';
+
 import { IS_OUTDATED } from './errors';
+
 
 const DEFAULT_OPTIONS: PfxOptions = {
   showCerts: false,
@@ -15,9 +17,9 @@ const pfxLoad = (certPath: string, passphrase: string, _options: PfxOptions = DE
   const { showCerts, showError } = options;
 
   const validCerts: Array<any> = [];
-  let error = null;
-  let isPasswordOrPfxInvalid;
-  let isPfxOutdated;
+  let error: Error | null = null;
+  let isPasswordOrPfxInvalid = false;
+  let isPfxOutdated = false;
 
   try {
     const blob = fs.readFileSync(certPath, { encoding: 'base64' });
@@ -40,9 +42,20 @@ const pfxLoad = (certPath: string, passphrase: string, _options: PfxOptions = DE
       });
     });
 
-    const isOutdatedCert = validCerts.filter((cert) => {
-      return cert.validity.notAfter.getTime() >= new Date().getTime();
-    }).length === 0;
+    const isOutdatedCertificates = validCerts.filter((cert) => {
+      if (!cert.validity) {
+        return false;
+      }
+      if (!cert.validity.notAfter) {
+        return false;
+      }
+      const expirationDate = new Date(cert.validity.notAfter).getTime();
+      const actualDate = new Date().getTime();
+
+      return expirationDate < actualDate;
+    }).length;
+
+    const isOutdatedCert = isOutdatedCertificates > 0;
 
     if (isOutdatedCert) {
       isPfxOutdated = isOutdatedCert;
@@ -52,7 +65,7 @@ const pfxLoad = (certPath: string, passphrase: string, _options: PfxOptions = DE
     isPasswordOrPfxInvalid = false;
   } catch (e) {
     isPasswordOrPfxInvalid = e !== IS_OUTDATED;
-    error = e;
+    error = e instanceof Error ? e : new Error(String(e));
   }
 
   const willWork = (!isPfxOutdated && !isPasswordOrPfxInvalid && !error);
